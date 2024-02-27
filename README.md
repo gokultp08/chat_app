@@ -1,6 +1,6 @@
 # post_crud_app
 
-CRUD app to create user, posts and comments
+Monorepo with CRUD app to create user, posts and comments
 
 Tech Stack
 ReactJS
