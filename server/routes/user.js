@@ -7,12 +7,12 @@ const {
   deleteUser,
   login,
 } = require("../services/userService");
-const authenticate = require("../helpers/middlewares/authenticate");
+const verifyJwt = require("../helpers/middlewares/verifyJwt");
 
-router.get("", authenticate, getUser);
-router.post("", createUser);
-router.delete("/:id", authenticate, deleteUser);
-router.get("/all", authenticate, getAllUsers);
 router.post("/login", login);
+router.post("", createUser);
+router.get("/all", verifyJwt, getAllUsers);
+router.get("/:id", verifyJwt, getUser);
+router.delete("/:id", verifyJwt, deleteUser);
 
 module.exports = router;

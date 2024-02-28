@@ -2,94 +2,125 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const JWT = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const { config } = require("../config");
+const CustomError = require("../helpers/customError");
 
-const getAllUsers = async (req, res) => {
+const getAllUsers = async (req, res, next) => {
   try {
     const users = await prisma.user.findMany({});
     return res.status(200).json(users);
   } catch (error) {
-    return res.status(500).json(error.message || "There was a server error.");
+    return next(CustomError(e.message));
   }
 };
 
-const getUser = async (req, res) => {
+const getUser = async (req, res, next) => {
   try {
-    const users = await prisma.user.findMany({});
-    return res.status(200).json(users);
-  } catch (error) {
-    return res.status(500).json(error.message || "There was a server error.");
-  }
-};
-
-const createUser = async (req, res) => {
-  try {
-    const { username, password } = req.body;
-
-    const user = await prisma.author.findUnique({
-      where: {
-        username: username,
-      },
-    });
-    if (user)
-      return res.status(403).json({
-        error: "User already exists.",
-      });
-
-    const salt = bcrypt.genSaltSync(10);
-    const hashPassword = bcrypt.hashSync(password, salt);
-
-    const newUser = await prisma.user.create({
-      data: { username, password: hashPassword },
-    });
-    return res.status(200).json({
-      message: "User has been added.",
-      token: JWT.sign({ user: newUser }, process.env.SECRET_KEY),
-    });
-  } catch (error) {
-    return res.status(500).json(error.message || "There was a server error.");
-  }
-};
-
-const login = async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    const user = await prisma.user.findUnique({
-      where: {
-        username: username,
-      },
-    });
-    if (!user)
-      return res.status(404).json({
-        message: "wrong email password combination",
-      });
-    const user_password = bcrypt.compareSync(password, user.password);
-    if (!user_password)
-      return res.status(404).json({
-        message: "wrong email password combination",
-      });
-
-    return res.status(200).json({
-      message: "User has been logged in.",
-      token: JWT.sign({ user: user }, process.env.SECRET_KEY),
-    });
-  } catch (error) {
-    return res.status(500).json(error.message || "There was a server error.");
-  }
-};
-
-const deleteUser = async (req, res) => {
-  try {
-    await prisma.user.delete({
+    const user = await prisma.user.findFirst({
       where: {
         id: Number(req.params.id),
       },
     });
-    return res.status(200).json({
-      message: "User has been deleted.",
-    });
-  } catch (error) {
-    return res.status(500).json(error.message || "There was a server error.");
+    return res.status(200).json(user);
+  } catch (e) {
+    return next(CustomError(e.message));
   }
 };
 
-module.exports = { getAllUsers, getUser, createUser, deleteUser, login };
+const addUser = async (req, res, next) => {
+  const { email, password, name } = req.body;
+
+  const user = await prisma.user.findUnique({
+    where: {
+      email: email,
+    },
+  });
+
+  if (user) {
+    return next(CustomError("User already exists", 403));
+  }
+
+  const salt = await bcrypt.genSalt(10);
+  const hashPassword = await bcrypt.hash(password, salt);
+
+  try {
+    const newUser = await prisma.user.create({
+      data: { email, password: hashPassword, name },
+    });
+    const token = JWT.sign(
+      {
+        user: {
+          id: newUser.id,
+          email: newUser.email,
+        },
+      },
+      config.JWT_SECRET_KEY
+    );
+    return res.status(200).json({
+      message: "Added Successfully",
+      token,
+    });
+  } catch (e) {
+    next(CustomError(e.message));
+  }
+};
+
+const login = async (req, res, next) => {
+  const { email, password } = req.body;
+  const user = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+
+  if (!user) {
+    return next(CustomError("User doesn't exist", 403));
+  }
+
+  const isCorrectPassword = await bcrypt.compare(password, user.password);
+  if (!isCorrectPassword) {
+    return next(CustomError("Incorrect credentials", 403));
+  }
+
+  const token = JWT.sign(
+    {
+      user: {
+        id: user.id,
+        email: user.email,
+      },
+    },
+    config.JWT_SECRET_KEY
+  );
+
+  return res.status(200).json({
+    message: "Logged in",
+    token,
+  });
+};
+
+const deleteUser = async (req, res) => {
+  const id = Number(req.params.id);
+  if (id !== Number(req.currentUserId)) {
+    return next(CustomError("Unauthorized to delete", 403));
+  }
+  try {
+    await prisma.user.delete({
+      where: {
+        id,
+      },
+    });
+    return res.status(200).json({
+      message: "Deleted Successfully",
+    });
+  } catch (error) {
+    return next(CustomError(error.message));
+  }
+};
+
+module.exports = {
+  getAllUsers,
+  getUser,
+  createUser: addUser,
+  deleteUser,
+  login,
+};
