@@ -4,12 +4,36 @@ const JWT = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { config } = require("../config");
 const CustomError = require("../helpers/customError");
+const { formatUserResponse } = require("../helpers/formatResponse");
 
 const getAllUsers = async (req, res, next) => {
   try {
     const users = await prisma.user.findMany({});
-    return res.status(200).json(users);
-  } catch (error) {
+    return res.status(200).json(users.map((user) => formatUserResponse(user)));
+  } catch (e) {
+    return next(CustomError(e.message));
+  }
+};
+
+const getTopContributers = async (req, res, next) => {
+  try {
+    const users = await prisma.$queryRaw`
+      SELECT "User"."id", "User"."email", "User"."name", COUNT(DISTINCT "Post"."id") as "distinctPostCount"
+      FROM "User"
+      LEFT JOIN "Post" ON "User"."id" = "Post"."authorId"
+      GROUP BY "User"."id", "User"."email", "User"."name"
+      ORDER BY "distinctPostCount" DESC
+    `;
+
+    const serializedData = users.map((user) => ({
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      distinctPostCount: user.distinctPostCount.toString(),
+    }));
+
+    return res.status(200).json(serializedData);
+  } catch (e) {
     return next(CustomError(e.message));
   }
 };
@@ -21,7 +45,7 @@ const getUser = async (req, res, next) => {
         id: Number(req.params.id),
       },
     });
-    return res.status(200).json(user);
+    return res.status(200).json(formatUserResponse(user));
   } catch (e) {
     return next(CustomError(e.message));
   }
@@ -95,10 +119,11 @@ const login = async (req, res, next) => {
   return res.status(200).json({
     message: "Logged in",
     token,
+    data: formatUserResponse(user),
   });
 };
 
-const deleteUser = async (req, res) => {
+const deleteUser = async (req, res, next) => {
   const id = Number(req.params.id);
   if (id !== Number(req.currentUserId)) {
     return next(CustomError("Unauthorized to delete", 403));
@@ -112,15 +137,16 @@ const deleteUser = async (req, res) => {
     return res.status(200).json({
       message: "Deleted Successfully",
     });
-  } catch (error) {
-    return next(CustomError(error.message));
+  } catch (e) {
+    return next(CustomError(e.message));
   }
 };
 
 module.exports = {
   getAllUsers,
   getUser,
-  createUser: addUser,
+  addUser,
   deleteUser,
   login,
+  getTopContributers,
 };

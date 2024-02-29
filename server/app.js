@@ -16,6 +16,8 @@ app.use(`${API_PREFIX}health`, (req, res) => {
 });
 
 app.use(`${API_PREFIX}user`, require("./routes/user"));
+app.use(`${API_PREFIX}post`, require("./routes/post"));
+app.use(`${API_PREFIX}comment`, require("./routes/comment"));
 
 app.use(errorCatcher);
 

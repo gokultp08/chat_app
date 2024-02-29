@@ -17,7 +17,7 @@ const verifyJwt = (req, res, next) => {
     if (err) {
       return next(CustomError("Unauthorized", 403));
     } else {
-      req.currentUserId = decoded.user.id;
+      req.currentUserId = Number(decoded.user.id);
       next();
     }
   });
