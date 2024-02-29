@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js",
+    "start": "npx prisma generate && nodemon server.js",
     "migrate": "npx prisma migrate deploy",
     "docker-build": "docker build -t crud_backend .",
     "docker-run": "docker run -p 8000:8000 -d crud_backend"

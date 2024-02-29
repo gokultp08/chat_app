@@ -1,5 +1,7 @@
 import { Routes as RouterRoutes, Route, useLocation } from "react-router-dom";
 import { Home } from "../components/Home/Home";
+import { Dashboard } from "../components/Dashboard/Dashboard";
+
 import { AnimatePresence } from "framer-motion";
 import { useEffect } from "react";
 
@@ -29,8 +31,9 @@ export const Routes = () => {
 
         {/* Public routes */}
         <Route path="/" element={<Home />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         {/* <Route path="/articles/:id/:slug" element={<Article />} />
-        <Route path="/login" element={<Login />} />
+        // <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/tags" element={<Tags />} />
         <Route path="/tag/:tagName" element={<Tag />} />

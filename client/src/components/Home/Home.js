@@ -1,18 +1,14 @@
 import React from "react";
-import { Box, Container, Grid } from "@mui/material";
-import { useSelector } from "react-redux";
-// import { RootState } from "../../app/store";
+import { LoginForm } from "../LoginForm/LoginForm";
+import "./Home.css";
 
 export const Home = () => {
-  //   const { data: articles, isLoading } = useGetArticlesQuery({ page, sortBy });
-
-  //   const user = useSelector((state) => state.auth.user);
-
   return (
-    <Container
-      sx={{ maxWidth: "100vw", minHeight: "100vh", backgroundColor: "red" }}
-    >
-      Hi There !!!!!!!!!!!!!!!!!!!!!!!!!!
-    </Container>
+    <div className="home">
+      <div className="first"></div>
+      <div className="second">
+        <LoginForm />
+      </div>
+    </div>
   );
 };

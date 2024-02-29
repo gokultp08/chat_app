@@ -11,15 +11,15 @@ import { store } from "./store/store.js";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    {/* <Provider store={store}> */}
-    <BrowserRouter>
-      <ErrorBoundary
-        FallbackComponent={ErrorFallback}
-        onReset={() => window.location.reload()}
-      >
-        <App />
-      </ErrorBoundary>
-    </BrowserRouter>
-    {/* </Provider> */}
+    <Provider store={store}>
+      <BrowserRouter>
+        <ErrorBoundary
+          FallbackComponent={ErrorFallback}
+          onReset={() => window.location.reload()}
+        >
+          <App />
+        </ErrorBoundary>
+      </BrowserRouter>
+    </Provider>
   </React.StrictMode>
 );
