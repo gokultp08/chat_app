@@ -4,12 +4,14 @@ const JWT = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { config } = require("../config");
 const CustomError = require("../helpers/customError");
+const logger = require("../helpers/logger");
 
 const getAllComments = async (req, res, next) => {
   try {
     const comments = await prisma.comment.findMany({});
     return res.status(200).json(comments);
   } catch (e) {
+    logger.error(e.message);
     return next(CustomError(e.message));
   }
 };
@@ -24,6 +26,7 @@ const getComment = async (req, res, next) => {
 
     return res.status(200).json(comment);
   } catch (e) {
+    logger.error(e.message);
     return next(CustomError(e.message));
   }
 };
@@ -41,6 +44,7 @@ const addComment = async (req, res, next) => {
       data: newComment,
     });
   } catch (e) {
+    logger.error(e.message);
     next(CustomError(e.message));
   }
 };
@@ -53,6 +57,7 @@ const deleteComment = async (req, res, next) => {
   });
 
   if (comment.authorId !== req.currentUserId) {
+    logger.error("Unauthorized to delete");
     return next(CustomError("Unauthorized to delete", 403));
   }
 
@@ -66,6 +71,7 @@ const deleteComment = async (req, res, next) => {
       message: "Deleted Successfully",
     });
   } catch (e) {
+    logger.error(e.message);
     return next(CustomError(e.message));
   }
 };

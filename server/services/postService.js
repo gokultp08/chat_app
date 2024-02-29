@@ -4,6 +4,7 @@ const JWT = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { config } = require("../config");
 const CustomError = require("../helpers/customError");
+const logger = require("../helpers/logger");
 
 const getAllPosts = async (req, res, next) => {
   try {
@@ -14,6 +15,7 @@ const getAllPosts = async (req, res, next) => {
     });
     return res.status(200).json(posts);
   } catch (e) {
+    logger.error(e.message);
     return next(CustomError(e.message));
   }
 };
@@ -35,6 +37,7 @@ const getPost = async (req, res, next) => {
 
     return res.status(200).json(post);
   } catch (e) {
+    logger.error(e.message);
     return next(CustomError(e.message));
   }
 };
@@ -52,6 +55,7 @@ const getPostsForUser = async (req, res, next) => {
 
     return res.status(200).json(posts);
   } catch (e) {
+    logger.error(e.message);
     return next(CustomError(e.message));
   }
 };
@@ -69,6 +73,7 @@ const addPost = async (req, res, next) => {
       data: newPost,
     });
   } catch (e) {
+    logger.error(e.message);
     next(CustomError(e.message));
   }
 };
@@ -81,6 +86,7 @@ const deletePost = async (req, res, next) => {
   });
 
   if (post.authorId !== req.currentUserId) {
+    logger.error("Unauthorized to delete");
     return next(CustomError("Unauthorized to delete", 403));
   }
 
@@ -94,6 +100,7 @@ const deletePost = async (req, res, next) => {
       message: "Deleted Successfully",
     });
   } catch (e) {
+    logger.error(e.message);
     return next(CustomError(e.message));
   }
 };

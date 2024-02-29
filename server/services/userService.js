@@ -5,12 +5,14 @@ const bcrypt = require("bcrypt");
 const { config } = require("../config");
 const CustomError = require("../helpers/customError");
 const { formatUserResponse } = require("../helpers/formatResponse");
+const logger = require("../helpers/logger");
 
 const getAllUsers = async (req, res, next) => {
   try {
     const users = await prisma.user.findMany({});
     return res.status(200).json(users.map((user) => formatUserResponse(user)));
   } catch (e) {
+    logger.error(e.message);
     return next(CustomError(e.message));
   }
 };
@@ -34,6 +36,7 @@ const getTopContributers = async (req, res, next) => {
 
     return res.status(200).json(serializedData);
   } catch (e) {
+    logger.error(e.message);
     return next(CustomError(e.message));
   }
 };
@@ -47,6 +50,7 @@ const getUser = async (req, res, next) => {
     });
     return res.status(200).json(formatUserResponse(user));
   } catch (e) {
+    logger.error(e.message);
     return next(CustomError(e.message));
   }
 };
@@ -61,6 +65,7 @@ const addUser = async (req, res, next) => {
   });
 
   if (user) {
+    logger.error("User already exists");
     return next(CustomError("User already exists", 403));
   }
 
@@ -85,6 +90,7 @@ const addUser = async (req, res, next) => {
       token,
     });
   } catch (e) {
+    logger.error(e.message);
     next(CustomError(e.message));
   }
 };
@@ -98,11 +104,13 @@ const login = async (req, res, next) => {
   });
 
   if (!user) {
+    logger.error("User doesn't exist");
     return next(CustomError("User doesn't exist", 403));
   }
 
   const isCorrectPassword = await bcrypt.compare(password, user.password);
   if (!isCorrectPassword) {
+    logger.error("Incorrect credentials");
     return next(CustomError("Incorrect credentials", 403));
   }
 
@@ -126,6 +134,7 @@ const login = async (req, res, next) => {
 const deleteUser = async (req, res, next) => {
   const id = Number(req.params.id);
   if (id !== Number(req.currentUserId)) {
+    logger.error("Unauthorized to delete");
     return next(CustomError("Unauthorized to delete", 403));
   }
   try {
@@ -138,6 +147,7 @@ const deleteUser = async (req, res, next) => {
       message: "Deleted Successfully",
     });
   } catch (e) {
+    logger.error(e.message);
     return next(CustomError(e.message));
   }
 };
