@@ -1,6 +1,12 @@
 import React from "react";
-import "./Dashboard.css";
+import OpenInFullIcon from "@mui/icons-material/OpenInFull";
 
-export const PostItem = () => {
-  return <div className="dashboard">PostItem</div>;
+import "./PostItem.css";
+
+export const PostItem = ({ post, handlePostClick }) => {
+  return (
+    <div className="postitem" onClick={() => handlePostClick(post)}>
+      {JSON.stringify(post)}
+    </div>
+  );
 };

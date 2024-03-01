@@ -1,9 +1,12 @@
-.dashboard {
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: yellow;
-  width: 100%;
+.postshell {
+  width: 95%;
   height: 100%;
-  /* overflow-y: scroll; */
+  padding: 2.5%;
+}
+.heading {
+  /* width: 100%; */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 }

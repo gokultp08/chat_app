@@ -1,9 +1,13 @@
 import { Routes as RouterRoutes, Route, useLocation } from "react-router-dom";
 import { Home } from "../components/Home/Home";
 import { Dashboard } from "../components/Dashboard/Dashboard";
+import { TopPosts } from "../components/TopPosts/TopPosts";
+import { PostList } from "../components/PostList/PostList";
 
 import { AnimatePresence } from "framer-motion";
 import { useEffect } from "react";
+import PrivateRoutes from "./PrivateRoutes";
+import { PostShell } from "../components/PostShell/PostShell";
 
 export const Routes = () => {
   const location = useLocation();
@@ -16,22 +20,18 @@ export const Routes = () => {
     <AnimatePresence initial={false} mode="wait">
       <RouterRoutes>
         {/* Private routes */}
-        {/* <Route element={<PrivateRoutes />}>
-          <Route path="/add-article" element={<AddArticle />} />
-          <Route path="/edit-article/:id" element={<EditArticle />} />
-          <Route path="/user/:id" element={<Profile />} />
-          <Route path="/user/:id/following" element={<Follow />} />
-          <Route path="/user/:id/followers" element={<Follow />} />
-          <Route path="/user/edit-profile" element={<EditProfile />}>
-            <Route index path="*" element={<ProfileSettings />} />
-            <Route path="account" element={<AccountSettings />} />
+        <Route element={<PrivateRoutes />}>
+          <Route path="/dashboard" element={<Dashboard />}>
+            <Route index path="*" element={<TopPosts />} />
+            <Route path="posts" element={<PostShell />}>
+              <Route index path=":id?" element={<PostList />} />
+            </Route>
           </Route>
-          <Route path="/reading-list" element={<ReadingList />} />
-        </Route> */}
+        </Route>
 
         {/* Public routes */}
         <Route path="/" element={<Home />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        {/* <Route path="/dashboard" element={<Dashboard />} /> */}
         {/* <Route path="/articles/:id/:slug" element={<Article />} />
         // <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
