@@ -1,18 +1,27 @@
 import React, { useContext, useEffect, useState } from "react";
-import "./PostViewModal.css";
 import {
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  Tooltip,
 } from "@mui/material";
-import { PostForm } from "../PostForm/PostForm";
+import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import { useSelector } from "react-redux";
-import DOMPurify from "dompurify";
-import { useCreatePostMutation } from "../../store/postsApi";
+import DeleteIcon from "@mui/icons-material/Delete";
+import "./PostViewModal.css";
+import { PostForm } from "../PostForm/PostForm";
+import {
+  useCreateCommentMutation,
+  useCreatePostMutation,
+  useEditPostMutation,
+  useDeletePostMutation,
+  useDeleteCommentMutation,
+} from "../../store/postsApi";
 import { ToastContext } from "../../context/ToastProvider";
+import ViewPost from "../ViewPost/ViewPost";
 
 export const PostViewModal = ({ open, handleClose, isNewPost, data }) => {
   const [value, setValue] = useState(data?.content || "");
@@ -30,6 +39,42 @@ export const PostViewModal = ({ open, handleClose, isNewPost, data }) => {
     },
   ] = useCreatePostMutation();
 
+  const [
+    editPost,
+    {
+      isSuccess: isEditPostSuccess,
+      isLoading: isEditPostLoading,
+      error: editPostError,
+    },
+  ] = useEditPostMutation();
+
+  const [
+    deletePost,
+    {
+      isSuccess: isDeletePostSuccess,
+      isLoading: isDeletePostLoading,
+      error: deletePostError,
+    },
+  ] = useDeletePostMutation();
+
+  const [
+    submitCreateComment,
+    {
+      isSuccess: isCreateCommentSuccess,
+      isLoading: isCreateCommentLoading,
+      error: createCommentError,
+    },
+  ] = useCreateCommentMutation();
+
+  const [
+    deleteComment,
+    {
+      isSuccess: isDeleteCommentSuccess,
+      isLoading: isDeleteCommentLoading,
+      error: deleteCommentError,
+    },
+  ] = useDeleteCommentMutation();
+
   useEffect(() => {
     if (isCreatePostSuccess) {
       showToast("success", "Post Created");
@@ -40,21 +85,76 @@ export const PostViewModal = ({ open, handleClose, isNewPost, data }) => {
     }
   }, [isCreatePostSuccess, createPostError]);
 
-  const sanitizedContent = DOMPurify.sanitize(data?.content);
+  useEffect(() => {
+    if (isCreateCommentSuccess) {
+      showToast("success", "Comment Added");
+      handleClose();
+    } else if (createCommentError) {
+      const err = createCommentError.data;
+      showToast("error", err.message);
+    }
+  }, [isCreateCommentSuccess, createCommentError]);
+
+  useEffect(() => {
+    if (isEditPostSuccess) {
+      showToast("success", "Post Updated");
+      handleClose();
+    } else if (editPostError) {
+      const err = editPostError.data;
+      showToast("error", err.message);
+    }
+  }, [isEditPostSuccess, editPostError]);
+
+  useEffect(() => {
+    if (isDeletePostSuccess) {
+      showToast("success", "Post Deleted");
+      handleClose();
+    } else if (deletePostError) {
+      const err = deletePostError.data;
+      showToast("error", err.message);
+    }
+  }, [isDeletePostSuccess, deletePostError]);
+
+  useEffect(() => {
+    if (isDeleteCommentSuccess) {
+      showToast("success", "Comment Deleted");
+      handleClose();
+    } else if (deleteCommentError) {
+      const err = deleteCommentError.data;
+      showToast("error", err.message);
+    }
+  }, [isDeleteCommentSuccess, deleteCommentError]);
 
   const createPost = () => {
     submitCreatePost({ authorId: user.id, content: value });
   };
 
-  const editPost = () => {};
-  console.log("modal", isNewPost, mode);
+  const handleSendComment = (comment) => {
+    const obj = {
+      authorId: data.authorId,
+      postId: data.id,
+      content: comment,
+    };
+    submitCreateComment(obj);
+  };
+
+  const handleEditPost = () => {
+    editPost({ id: data.id, body: { content: value } });
+  };
+
+  const handleCommentDelete = (id) => {
+    deleteComment(id);
+  };
+
   return (
     <Dialog
+      fullScreen
       open={open}
       keepMounted
       onClose={handleClose}
       fullWidth
       maxWidth="sm"
+      sx={{ padding: "2rem" }}
     >
       <DialogTitle
         sx={{
@@ -63,20 +163,61 @@ export const PostViewModal = ({ open, handleClose, isNewPost, data }) => {
           justifyContent: "space-between",
         }}
       >
-        {"New Post"}
-        {!isNewPost && <EditIcon onClick={() => setMode("edit")} />}
+        {isNewPost ? "New Post" : mode === "edit" ? "Edit Post" : " View Post"}
+        {!isNewPost && (
+          <div className="edit_close_buttons">
+            <Tooltip title="Delete Post">
+              <DeleteIcon
+                onClick={() => deletePost(data.id)}
+                disabled={isDeletePostLoading || isDeleteCommentLoading}
+              />
+            </Tooltip>
+            <Tooltip title="Edit Post">
+              <EditIcon
+                onClick={() => setMode("edit")}
+                disabled={isDeletePostLoading || isDeleteCommentLoading}
+              />
+            </Tooltip>
+            <Tooltip title="Close">
+              <CloseIcon
+                onClick={() => handleClose()}
+                disabled={isDeletePostLoading || isDeleteCommentLoading}
+              />
+            </Tooltip>
+          </div>
+        )}
       </DialogTitle>
-      <DialogContent sx={{ display: "flex", flexDirection: "column" }}>
+      <DialogContent
+        sx={{
+          height: "max-content",
+        }}
+      >
         {(mode === "edit" || isNewPost) && (
-          <PostForm value={value} setValue={setValue} />
+          <div className="editor">
+            <PostForm value={value} setValue={setValue} />
+          </div>
         )}
         {mode === "view" && !isNewPost && (
-          // <div dangerouslySetInnerHTML={{ __html: sanitizedContent }} />
-          <div>{"fddgfdsfgdfsg"}</div>
+          <ViewPost
+            user={user}
+            data={data}
+            handleSendComment={handleSendComment}
+            loading={isCreateCommentLoading}
+            handleCommentDelete={handleCommentDelete}
+          />
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} disabled={isCreatePostLoading}>
+        <Button
+          onClick={handleClose}
+          disabled={
+            isCreatePostLoading ||
+            isCreateCommentLoading ||
+            isDeletePostLoading ||
+            isEditPostLoading ||
+            isDeleteCommentLoading
+          }
+        >
           Close
         </Button>
         {isNewPost && (
@@ -90,7 +231,11 @@ export const PostViewModal = ({ open, handleClose, isNewPost, data }) => {
           </Button>
         )}
         {mode === "edit" && (
-          <Button type="submit" variant="contained" onClick={() => editPost()}>
+          <Button
+            type="submit"
+            variant="contained"
+            onClick={() => handleEditPost()}
+          >
             Submit
           </Button>
         )}

@@ -50,9 +50,10 @@ const addComment = async (req, res, next) => {
 };
 
 const deleteComment = async (req, res, next) => {
+  const id = Number(req.params.id);
   const comment = await prisma.comment.findFirst({
     where: {
-      id: Number(req.params.id),
+      id,
     },
   });
 

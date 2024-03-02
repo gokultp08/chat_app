@@ -8,7 +8,6 @@ const appStateSlice = createSlice({
   },
   reducers: {
     setLoggedInUser: (state, action) => {
-      console.log("setuser", action);
       localStorage.setItem("user", JSON.stringify(action.payload.data));
       localStorage.setItem("token", action.payload.token);
       state.user = action.payload.data;

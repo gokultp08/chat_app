@@ -1,0 +1,17 @@
+.comment_list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background-color: brown;
+  padding-top: 1rem;
+}
+.comment_content {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  height: 10rem;
+  overflow-y: scroll;
+}
+.comment_content::-webkit-scrollbar {
+  display: none;
+}

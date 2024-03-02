@@ -6,15 +6,17 @@ const {
   getPost,
   deletePost,
   getPostsForUser,
+  editPost,
 } = require("../services/postService");
 const verifyJwt = require("../helpers/middlewares/verifyJwt");
 const validateRequest = require("../helpers/middlewares/validateRequest");
 const { postSchema } = require("../helpers/joiSchema");
 
-router.post("", validateRequest(postSchema), addPost);
-router.get("/all", getAllPosts);
-router.get("/:id", getPost);
-router.delete("/:id", deletePost);
-router.get("/all/user/:userId", getPostsForUser);
+router.post("", validateRequest(postSchema), verifyJwt, addPost);
+router.get("/all", verifyJwt, getAllPosts);
+router.get("/:id", verifyJwt, getPost);
+router.delete("/:id", verifyJwt, deletePost);
+router.patch("/:id", verifyJwt, editPost);
+router.get("/all/user/:userId", verifyJwt, getPostsForUser);
 
 module.exports = router;

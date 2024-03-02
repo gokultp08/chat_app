@@ -33,7 +33,6 @@ export const Register = ({ open, handleClose }) => {
   const { showToast } = useContext(ToastContext);
 
   const onSubmit = (data) => {
-    console.log(data);
     registerUser(data);
   };
 

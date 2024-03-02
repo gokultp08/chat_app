@@ -13,7 +13,7 @@ const userSchema = joi.object({
 
 const postSchema = joi.object({
   authorId: joi.number().required(),
-  content: joi.string().required().min(3).max(250),
+  content: joi.string().required().min(3),
 });
 
 const commentSchema = joi.object({

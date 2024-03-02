@@ -10,9 +10,9 @@ const verifyJwt = require("../helpers/middlewares/verifyJwt");
 const validateRequest = require("../helpers/middlewares/validateRequest");
 const { commentSchema } = require("../helpers/joiSchema");
 
-router.post("", validateRequest(commentSchema), addComment);
-router.get("/all", getAllComments);
-router.get("/:id", getComment);
-router.delete("/:id", deleteComment);
+router.post("", verifyJwt, validateRequest(commentSchema), addComment);
+router.get("/all", verifyJwt, getAllComments);
+router.get("/:id", verifyJwt, getComment);
+router.delete("/:id", verifyJwt, deleteComment);
 
 module.exports = router;

@@ -3,45 +3,52 @@ import Typography from "@mui/material/Typography";
 import { useParams } from "react-router-dom";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { Button } from "@mui/material";
+import { useSelector } from "react-redux";
+import "./PostShell.css";
 import { PostViewModal } from "../PostViewModal/PostViewModal";
 import { PostList } from "../PostList/PostList";
-import { useGetAllPostsQuery } from "../../store/postsApi";
-import "./PostShell.css";
+import FilterPost from "../FilterPost/FilterPost";
+import { useGetPostsQuery } from "../../store/postsApi";
 
 export const PostShell = () => {
-  const { id = "all" } = useParams();
-  const title = id === "all" ? "All Posts" : "My Posts";
+  const { id = "my_feed" } = useParams();
+  const title = id === "my_feed" ? "My Posts" : "All Posts";
 
-  let posts = [];
+  let filteredPosts = [];
 
-  const { data, isLoading, error } = useGetAllPostsQuery();
+  const user = useSelector((state) => state.appState.user);
+
+  const { data, isLoading, error } = useGetPostsQuery(
+    id === "my_feed" ? user.id : null
+  );
 
   if (data?.length > 0) {
-    posts = data;
+    filteredPosts = data;
   }
 
-  const [open, setOpen] = useState(false);
-  const [isNewPost, setIsNewPost] = useState(false);
+  const [seacrhValue, setSeacrhValue] = useState("");
+
   const [postModalData, setPostModalData] = useState({
     open: false,
-    value: "",
     isNewPost: false,
+    data: {},
   });
 
   const handleClose = () => {
     setPostModalData((prev) => ({
       ...prev,
       open: false,
-      value: "",
       isNewPost: false,
+      data: {},
     }));
   };
+
   const handleAddPost = () => {
     setPostModalData((prev) => ({
       ...prev,
       open: true,
       isNewPost: true,
-      value: "",
+      data: {},
     }));
   };
 
@@ -50,35 +57,46 @@ export const PostShell = () => {
       ...prev,
       open: true,
       isNewPost: false,
-      value: data,
+      data,
     }));
   };
 
   if (isLoading) {
     return <div>Loading!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!</div>;
   }
-  console.log("render", postModalData);
+
+  if (seacrhValue !== "") {
+    filteredPosts = filteredPosts.filter((item) =>
+      item.content.match(seacrhValue)
+    );
+  }
+
   return (
     <div className="postshell">
       <div className="heading">
         <Typography variant="h3" gutterBottom>
           {title}
         </Typography>
-        <Button
-          variant="outlined"
-          startIcon={<AddCircleIcon />}
-          onClick={handleAddPost}
-        >
-          Add Post
-        </Button>
+        <div className="action_fields">
+          <FilterPost value={seacrhValue} setValue={setSeacrhValue} />
+          <Button
+            variant="outlined"
+            startIcon={<AddCircleIcon />}
+            onClick={handleAddPost}
+          >
+            Add Post
+          </Button>
+        </div>
       </div>
-      <PostList posts={posts} handlePostClick={handlePostClick} />
-      <PostViewModal
-        open={postModalData.open}
-        handleClose={handleClose}
-        isNewPost={postModalData.isNewPost}
-        data={postModalData.data}
-      />
+      <PostList posts={filteredPosts} handlePostClick={handlePostClick} />
+      {postModalData.open && (
+        <PostViewModal
+          open={postModalData.open}
+          handleClose={handleClose}
+          isNewPost={postModalData.isNewPost}
+          data={postModalData.data}
+        />
+      )}
     </div>
   );
 };

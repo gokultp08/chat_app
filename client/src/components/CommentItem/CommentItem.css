@@ -1,0 +1,14 @@
+.comment_item {
+  padding: 2px;
+  background-color: orange;
+  display: grid;
+  grid-template-columns: 0.95fr 0.05fr;
+  align-items: center;
+}
+.item_first {
+  display: flex;
+  flex-direction: column;
+}
+.delete_icon {
+  align-self: center;
+}

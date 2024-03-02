@@ -78,10 +78,44 @@ const addPost = async (req, res, next) => {
   }
 };
 
-const deletePost = async (req, res, next) => {
+const editPost = async (req, res, next) => {
+  const id = Number(req.params.id);
   const post = await prisma.post.findFirst({
     where: {
-      id: Number(req.params.id),
+      id,
+    },
+  });
+
+  if (post.authorId !== req.currentUserId) {
+    logger.error("Unauthorized to edit");
+    return next(CustomError("Unauthorized to edit", 403));
+  }
+
+  const { content } = req.body;
+
+  try {
+    await prisma.post.update({
+      where: {
+        id,
+      },
+      data: {
+        content,
+      },
+    });
+    return res.status(200).json({
+      message: "Updated Successfully",
+    });
+  } catch (e) {
+    logger.error(e.message);
+    return next(CustomError(e.message));
+  }
+};
+
+const deletePost = async (req, res, next) => {
+  const id = Number(req.params.id);
+  const post = await prisma.post.findFirst({
+    where: {
+      id,
     },
   });
 
@@ -111,4 +145,5 @@ module.exports = {
   getPost,
   deletePost,
   getPostsForUser,
+  editPost,
 };

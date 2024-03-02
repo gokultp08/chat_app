@@ -1,12 +1,15 @@
 .postshell {
-  width: 95%;
-  height: 100%;
-  padding: 2.5%;
+  padding: 1% 2.5% 0% 2.5%;
 }
 .heading {
-  /* width: 100%; */
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  padding-bottom: 1%;
+}
+.action_fields {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
 }
