@@ -52,13 +52,16 @@ export const Header = ({ handleTopContributersClick, handlePostsClick }) => {
 
   return (
     <div className="header">
-      <div className="first">
-        <DynamicFeedOutlinedIcon fontSize="large" />
+      <div className="header_part">
+        <DynamicFeedOutlinedIcon
+          fontSize="large"
+          style={{ color: "#BFA181" }}
+        />
         <div className="customButton" onClick={handleTopContributersClick}>
           TOP CONTRIBUTORS
         </div>
       </div>
-      <div className="second">
+      <div className="header_part">
         <div className="customButton" onClick={handlePostsClick}>
           FEED
         </div>

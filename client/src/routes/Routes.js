@@ -19,26 +19,15 @@ export const Routes = () => {
   return (
     <AnimatePresence initial={false} mode="wait">
       <RouterRoutes>
-        {/* Private routes */}
+        <Route path="/" element={<Home />} />
         <Route element={<PrivateRoutes />}>
           <Route path="/dashboard" element={<Dashboard />}>
             <Route index path="*" element={<TopPosts />} />
             <Route path="posts" element={<PostShell />}>
-              <Route index path=":id?" element={<PostList />} />
+              <Route index path=":postType?" element={<PostList />} />
             </Route>
           </Route>
         </Route>
-
-        {/* Public routes */}
-        <Route path="/" element={<Home />} />
-        {/* <Route path="/dashboard" element={<Dashboard />} /> */}
-        {/* <Route path="/articles/:id/:slug" element={<Article />} />
-        // <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/tags" element={<Tags />} />
-        <Route path="/tag/:tagName" element={<Tag />} />
-        <Route path="/search" element={<Search />} /> */}
-        {/* <Route path="*" element={<NotFound />} /> */}
       </RouterRoutes>
     </AnimatePresence>
   );

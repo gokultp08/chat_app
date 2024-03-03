@@ -13,8 +13,10 @@ export const CommentItem = ({
   return (
     <div className="comment_item">
       <div className="item_first">
-        <Typography>{comment?.content}</Typography>
-        <Typography> Commented By : {comment?.authorId}</Typography>
+        <Typography fontSize="14px">{comment?.content}</Typography>
+        <Typography fontSize="11px">
+          Commented By : {comment?.authorId}
+        </Typography>
       </div>
       {user.id === comment.authorId && (
         <DeleteIcon

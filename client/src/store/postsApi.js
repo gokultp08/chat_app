@@ -1,4 +1,5 @@
 import { apiSlice } from "./apiSlice";
+import { userApi } from "./userApi";
 
 export const postsApi = apiSlice.injectEndpoints({
   endpoints: (build) => ({
@@ -7,6 +8,16 @@ export const postsApi = apiSlice.injectEndpoints({
         url: id != null ? `post/all/user/${id}` : "post/all",
         method: "GET",
       }),
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({
+                type: "Post",
+                id,
+              })),
+              { type: "Post", id: "LIST" },
+            ]
+          : [{ type: "Post", id: "LIST" }],
     }),
     getPost: build.query({
       query: (id) => `post/${id}`,
@@ -18,7 +29,12 @@ export const postsApi = apiSlice.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: [{ type: "POST", id: "LIST" }, { type: "Tag" }],
+      invalidatesTags: [{ type: "Post", id: "LIST" }, { type: "Tag" }],
+      onQueryStarted: (_, { dispatch, queryFulfilled }) => {
+        dispatch(
+          userApi.util.invalidateTags([{ type: "Top User", id: "LIST" }])
+        );
+      },
     }),
     editPost: build.mutation({
       query: ({ id, body }) => ({
@@ -33,7 +49,12 @@ export const postsApi = apiSlice.injectEndpoints({
         url: `post/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: [{ type: "post", id: "LIST" }, { type: "Tag" }],
+      invalidatesTags: [{ type: "Post", id: "LIST" }, { type: "Tag" }],
+      onQueryStarted: (_, { dispatch, queryFulfilled }) => {
+        dispatch(
+          userApi.util.invalidateTags([{ type: "Top User", id: "LIST" }])
+        );
+      },
     }),
     createComment: build.mutation({
       query: (body) => ({
@@ -41,14 +62,14 @@ export const postsApi = apiSlice.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: [{ type: "POST", id: "LIST" }, { type: "Tag" }],
+      invalidatesTags: [{ type: "Post", id: "LIST" }, { type: "Tag" }],
     }),
     deleteComment: build.mutation({
       query: (id) => ({
         url: `comment/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: [{ type: "post", id: "LIST" }, { type: "Tag" }],
+      invalidatesTags: [{ type: "Post", id: "LIST" }, { type: "Tag" }],
     }),
   }),
 });

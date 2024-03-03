@@ -6,13 +6,13 @@ import Typography from "@mui/material/Typography";
 
 export default function TopPostItem({ item, index }) {
   return (
-    <Box sx={{ width: 225 }}>
+    <Box sx={{ width: 250 }}>
       <Card variant="outlined">
         <CardContent>
           <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
             {index + 1}
           </Typography>
-          <Typography variant="h5" component="div">
+          <Typography variant="h5" component="div" color="#178582">
             {item.name}
           </Typography>
           <Typography sx={{ mb: 1.5 }} color="text.secondary">

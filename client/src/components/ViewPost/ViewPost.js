@@ -14,7 +14,7 @@ export default function ViewPost({
   const sanitizedContent = DOMPurify.sanitize(data?.content) || data.content;
   return (
     <div className="viewpost">
-      <Card sx={{ minWidth: 275, minHeight: "60%" }}>
+      <Card sx={{ minWidth: 275, overflowY: "scroll" }}>
         <CardContent>
           <div dangerouslySetInnerHTML={{ __html: sanitizedContent }} />
         </CardContent>

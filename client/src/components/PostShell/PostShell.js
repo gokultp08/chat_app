@@ -11,15 +11,15 @@ import FilterPost from "../FilterPost/FilterPost";
 import { useGetPostsQuery } from "../../store/postsApi";
 
 export const PostShell = () => {
-  const { id = "my_feed" } = useParams();
-  const title = id === "my_feed" ? "My Posts" : "All Posts";
+  const { postType = "" } = useParams();
+  const title = postType === "my_feed" ? "My Posts" : "All Posts";
 
   let filteredPosts = [];
 
   const user = useSelector((state) => state.appState.user);
 
   const { data, isLoading, error } = useGetPostsQuery(
-    id === "my_feed" ? user.id : null
+    postType === "my_feed" ? user.id : null
   );
 
   if (data?.length > 0) {
@@ -74,15 +74,16 @@ export const PostShell = () => {
   return (
     <div className="postshell">
       <div className="heading">
-        <Typography variant="h3" gutterBottom>
+        <Typography variant="h3" gutterBottom color="#178582">
           {title}
         </Typography>
         <div className="action_fields">
           <FilterPost value={seacrhValue} setValue={setSeacrhValue} />
           <Button
             variant="outlined"
-            startIcon={<AddCircleIcon />}
+            startIcon={<AddCircleIcon style={{ color: "#BFA181" }} />}
             onClick={handleAddPost}
+            style={{ borderColor: "#BFA181", color: "#BFA181" }}
           >
             Add Post
           </Button>

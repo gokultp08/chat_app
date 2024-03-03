@@ -27,6 +27,7 @@ export const userApi = apiSlice.injectEndpoints({
         url: "user/topContributers",
         method: "GET",
       }),
+      providesTags: (_res, _err, id) => [{ type: "Top User", id: "LIST" }],
     }),
   }),
 });

@@ -77,7 +77,11 @@ export const Register = ({ open, handleClose }) => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} disabled={isLoading}>
+          <Button
+            onClick={handleClose}
+            disabled={isLoading}
+            style={{ borderColor: "#0A1828", color: "#0A1828" }}
+          >
             Close
           </Button>
           <Button
@@ -89,6 +93,7 @@ export const Register = ({ open, handleClose }) => {
               errors.name?.type === "required" ||
               isLoading
             }
+            style={{ backgroundColor: "#0A1828", color: "#BFA181" }}
           >
             Register
           </Button>

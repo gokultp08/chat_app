@@ -15,12 +15,13 @@ export const PostItem = ({ post, handlePostClick }) => {
     <div className="postitem">
       <div className="post_title_content">
         <div className="post_title">
-          <Person4Icon />
+          <Person4Icon style={{ color: "#178582" }} />
           {post.authorId}
         </div>
         <Tooltip title="Open Post">
           <OpenInFullIcon
             className="open_icon"
+            style={{ color: "#178582" }}
             onClick={() => handlePostClick(post)}
           />
         </Tooltip>
@@ -31,7 +32,7 @@ export const PostItem = ({ post, handlePostClick }) => {
             __html: sanitizedContent,
           }}
         />
-        <div>Comments: {post.Comment.length}</div>
+        <div className="postitem_comments">Comments: {post.Comment.length}</div>
       </div>
     </div>
   );

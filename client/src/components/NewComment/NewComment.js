@@ -15,6 +15,7 @@ export default function NewComment({ handleSendComment, loading }) {
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
+        border: "1px solid #178582",
       }}
     >
       <InputBase
@@ -30,6 +31,7 @@ export default function NewComment({ handleSendComment, loading }) {
           sx={{ p: "10px" }}
           onClick={() => handleSendComment(value)}
           disabled={loading}
+          style={{ color: "#178582" }}
         >
           <SendIcon />
         </IconButton>

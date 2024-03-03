@@ -38,7 +38,7 @@ export default function HeaderMenu({
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            <PersonOutlineIcon />
+            <PersonOutlineIcon fontSize="large" style={{ color: "#BFA181" }} />
           </IconButton>
         </Tooltip>
       </Box>
@@ -48,58 +48,60 @@ export default function HeaderMenu({
         open={open}
         onClose={handleClose}
         onClick={handleClose}
-        PaperProps={{
-          elevation: 0,
-          sx: {
-            overflow: "visible",
-            filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-            mt: 1.5,
-            "& .MuiAvatar-root": {
-              width: 32,
-              height: 32,
-              ml: -0.5,
-              mr: 1,
-            },
-            "&::before": {
-              content: '""',
-              display: "block",
-              position: "absolute",
-              top: 0,
-              right: 14,
-              width: 10,
-              height: 10,
-              bgcolor: "background.paper",
-              transform: "translateY(-50%) rotate(45deg)",
-              zIndex: 0,
+        slotProps={{
+          paper: {
+            elevation: 0,
+            sx: {
+              overflow: "visible",
+              filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+              mt: 1.5,
+              "& .MuiAvatar-root": {
+                width: 32,
+                height: 32,
+                ml: -0.5,
+                mr: 1,
+              },
+              "&::before": {
+                content: '""',
+                display: "block",
+                position: "absolute",
+                top: 0,
+                right: 14,
+                width: 10,
+                height: 10,
+                bgcolor: "background.paper",
+                transform: "translateY(-50%) rotate(45deg)",
+                zIndex: 0,
+              },
             },
           },
         }}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem onClick={handleDelete}>
+        <MenuItem onClick={handleDelete} style={{ color: "#178582" }}>
           <ListItemIcon>
-            <PersonRemoveIcon />
+            <PersonRemoveIcon style={{ color: "#0A1828" }} />
           </ListItemIcon>
           Delete My Profile
         </MenuItem>
-        <MenuItem onClick={handleViewMyPosts}>
+        <MenuItem onClick={handleViewMyPosts} style={{ color: "#178582" }}>
           <ListItemIcon>
-            <AllInboxIcon />
+            <AllInboxIcon style={{ color: "#0A1828" }} />
           </ListItemIcon>
           View My posts
         </MenuItem>
         <Divider />
 
-        <MenuItem onClick={handleAboutClick}>
+        <MenuItem onClick={handleAboutClick} style={{ color: "#178582" }}>
           <ListItemIcon>
-            <InfoIcon />
+            <InfoIcon style={{ color: "#0A1828" }} />
           </ListItemIcon>
           About
         </MenuItem>
-        <MenuItem onClick={handleLogout}>
+        <MenuItem onClick={handleLogout} style={{ color: "#178582" }}>
           <ListItemIcon>
-            <LogoutIcon />
+            <LogoutIcon style={{ color: "#0A1828" }} />
           </ListItemIcon>
           Logout
         </MenuItem>

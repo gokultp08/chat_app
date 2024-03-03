@@ -161,6 +161,7 @@ export const PostViewModal = ({ open, handleClose, isNewPost, data }) => {
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",
+          color: "#0A1828",
         }}
       >
         {isNewPost ? "New Post" : mode === "edit" ? "Edit Post" : " View Post"}
@@ -217,6 +218,7 @@ export const PostViewModal = ({ open, handleClose, isNewPost, data }) => {
             isEditPostLoading ||
             isDeleteCommentLoading
           }
+          style={{ borderColor: "#0A1828", color: "#0A1828" }}
         >
           Close
         </Button>
@@ -226,6 +228,7 @@ export const PostViewModal = ({ open, handleClose, isNewPost, data }) => {
             variant="contained"
             onClick={() => createPost()}
             disabled={isCreatePostLoading}
+            style={{ backgroundColor: "#0A1828", color: "#BFA181" }}
           >
             Create Post
           </Button>
@@ -235,6 +238,7 @@ export const PostViewModal = ({ open, handleClose, isNewPost, data }) => {
             type="submit"
             variant="contained"
             onClick={() => handleEditPost()}
+            style={{ backgroundColor: "#0A1828", color: "#BFA181" }}
           >
             Submit
           </Button>

@@ -4,4 +4,5 @@
   display: grid;
   grid-template-rows: 0.15fr 0.85fr;
   padding-bottom: 3rem;
+  background-color: #0a1828;
 }

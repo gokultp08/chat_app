@@ -1,9 +1,10 @@
 .comment_item {
   padding: 2px;
-  background-color: orange;
-  display: grid;
-  grid-template-columns: 0.95fr 0.05fr;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
+  border-bottom: 2px solid #bfa181;
 }
 .item_first {
   display: flex;
@@ -11,4 +12,5 @@
 }
 .delete_icon {
   align-self: center;
+  align-items: flex-end;
 }

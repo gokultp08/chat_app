@@ -2,9 +2,11 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  background-color: burlywood;
+  background-color: white;
   height: fit-content;
   padding: 1rem;
+  border-radius: 5px;
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3);
 }
 .post_title {
   display: flex;
@@ -12,6 +14,7 @@
   justify-content: flex-start;
   align-items: center;
   gap: 1rem;
+  color: #178582;
 }
 .post_title_content {
   display: flex;
@@ -29,4 +32,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+.postitem_comments {
+  color: #178582;
 }

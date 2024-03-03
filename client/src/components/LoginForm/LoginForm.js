@@ -12,6 +12,7 @@ import { useLoginMutation } from "../../store/userApi";
 import { setLoggedInUser } from "../../store/appStateSlice";
 import { Register } from "../Register/Register";
 import { ToastContext } from "../../context/ToastProvider";
+import Paper from "@mui/material/Paper";
 
 export const LoginForm = () => {
   const navigate = useNavigate();
@@ -59,7 +60,7 @@ export const LoginForm = () => {
   }
 
   return (
-    <div className="login">
+    <Paper elevation={24} sx={{ width: "60%", padding: "5%" }}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <TextField
           placeholder="Email"
@@ -76,6 +77,7 @@ export const LoginForm = () => {
           variant="contained"
           disabled={errors.email?.type === "required"}
           loading={isLoading}
+          style={{ backgroundColor: "#0A1828", color: "#BFA181" }}
         >
           Submit
         </LoadingButton>
@@ -84,11 +86,12 @@ export const LoginForm = () => {
           size="small"
           type="button"
           onClick={() => setRegisterDialogOpen(true)}
+          style={{ borderColor: "#0A1828", color: "#0A1828" }}
         >
           Click to Register
         </Button>
       </form>
       <Register open={registerDialogOpen} handleClose={handleClose} />
-    </div>
+    </Paper>
   );
 };
